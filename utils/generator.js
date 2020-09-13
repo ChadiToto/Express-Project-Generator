@@ -48,6 +48,12 @@ function generateModel(model) {
     fs.writeFileSync(model_file, fields, "utf8");
 
     /* Change Model name */
+    let modelname = fields.replace("modelName", model.name);
+    fs.writeFileSync(model_file, modelname);
+
+    /* Change Schema name */
+    let schema = modelname.replace("schemaName", model.name + "Schema");
+    fs.writeFileSync(model_file, schema, "utf8");
   });
 }
 

@@ -3,4 +3,4 @@ const Schema = mongoose.Schema;
 
 var schemaName = new Schema({fields});
 
-module.exports = mongoose.model({ modelName }, schemaName);
+module.exports = mongoose.model(modelName, schemaName);
