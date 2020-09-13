@@ -39,21 +39,13 @@ function generateModel(model) {
       return console.log(err);
     }
 
-    /* Change Schema name */
-    var result = data.replace("schemaName", model.name + "Schema");
-    fs.writeFileSync(model_file, result, "utf8");
+    /* Modify Template Values */
+    var generated_values = data.replace(/schemaName/g, model.name + "Schema"); // Change Schema Name
+    generated_values = generated_values.replace("fields", getFields(model)); // Insert Fields
+    generated_values = generated_values.replace("modelName", model.name); // Change Model Name
 
-    /* Insert Fields */
-    let fields = result.replace("fields", getFields(model));
-    fs.writeFileSync(model_file, fields, "utf8");
-
-    /* Change Model name */
-    let modelname = fields.replace("modelName", model.name);
-    fs.writeFileSync(model_file, modelname);
-
-    /* Change Schema name */
-    let schema = modelname.replace("schemaName", model.name + "Schema");
-    fs.writeFileSync(model_file, schema, "utf8");
+    /* Apply Changes */
+    fs.writeFileSync(model_file, generated_values, "utf8");
   });
 }
 
