@@ -1,12 +1,19 @@
 {
-  "name": "EPJ",
+  "name": "EPG",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "epg.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "bin": {
+    "express-project-generator": "./bin/epg.js"
+  },
+  "dependencies": {
+    "mongoose": "^5.10.5",
+    "readline-sync": "^1.4.10"
+  }
 }
