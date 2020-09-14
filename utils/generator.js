@@ -1,3 +1,4 @@
+const { time } = require("console");
 const fs = require("fs");
 const path = require("path");
 
@@ -46,6 +47,8 @@ function generateModel(model) {
 
     /* Apply Changes */
     fs.writeFileSync(model_file, generated_values, "utf8");
+
+    console.log(("\nCreated Model : " + model.name).green);
   });
 }
 
