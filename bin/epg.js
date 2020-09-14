@@ -69,7 +69,7 @@ function generateRest() {
     } else {
       let field_flag = true;
 
-      /* STEP 2 : Create Fields */
+      /* STEP 2 : Create Fields Until Users inputs the Return button */
       while (field_flag) {
         let field = {};
         field.name = question(MODEL_MESSAGES.FIELD);
@@ -78,28 +78,24 @@ function generateRest() {
           field_flag = exit(MENU_QUESTIONS.EXIT);
           break;
         }
-        field.type = question(MODEL_MESSAGES.TYPE);
-        /*Control Field Typing */
 
-        let type_filter1 = !MODEL_TYPES.map((v) => v.toLowerCase()).includes(
-          field.type.toLowerCase()
-        ); // Filters Regular Typing
+        /* Field Typing Flags */
+        let type_filter1 = false;
+        let type_filter2 = false;
 
-        let type_filter2 = !MODEL_TYPES.map(
-          (v) => "[" + v.toLowerCase() + "]"
-        ).includes(field.type.toLowerCase()); // Filters Arrays
-
-        while (type_filter1 && type_filter2) {
-          console.log(ERRORS.TYPE);
+        /*Control Fields Until Users input is correct */
+        do {
+          if (type_filter1 && type_filter2) console.log(ERRORS.TYPE.red);
           field.type = question(MODEL_MESSAGES.TYPE);
-          /* Reset Filters */
+
           type_filter1 = !MODEL_TYPES.map((v) => v.toLowerCase()).includes(
             field.type.toLowerCase()
-          );
+          ); // Filters Regular Typing
+
           type_filter2 = !MODEL_TYPES.map(
             (v) => "[" + v.toLowerCase() + "]"
-          ).includes(field.type.toLowerCase());
-        }
+          ).includes(field.type.toLowerCase()); // Filters Arrays
+        } while (type_filter1 && type_filter2);
 
         fields.push(field);
       }
@@ -107,7 +103,7 @@ function generateRest() {
     }
   }
 
-  /* Step 3 : For every model entered generate a file */
+  /* Step 3 : For every model entered generate Model/Controllers/Route files */
   const bar = new cliProgress.Bar(PROGRESS, cliProgress.Presets.shades_grey);
   bar.start(models.length, 1);
   for (let i = 0; i < models.length; i++) {
