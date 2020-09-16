@@ -1,55 +1,18 @@
 #!/usr/bin/env node
 
-const { question, keyInYN } = require("readline-sync");
-const { generateModel } = require("../utils/generator");
-const colors = require("colors");
+const {
+  MENU,
+  MENU_QUESTIONS,
+  PROGRESS,
+  MODEL_MESSAGES,
+  ERRORS,
+} = require("../utils/constants");
+
+const { question } = require("readline-sync");
+const { generateModel } = require("../lib/generator");
 const cliProgress = require("cli-progress");
 
-const MENU = [
-  "1-Intialize Project",
-  "2-Add Model/Controller",
-  "3-Add Authentification",
-  "4-Add Dockerfile",
-];
-
-const MENU_QUESTIONS = {
-  CHOICE: "Your Choice ? [Press 'RETURN' to exit] :",
-  EXIT: "Are you sure ? : ",
-};
-
-const PROGRESS = {
-  format: "REST Generation {bar} {percentage}%  ",
-  hideCursor: true,
-};
-
-const MODEL_MESSAGES = {
-  NAME: "Whats your Model's name? [Press 'Return' to cancel] : ",
-  FIELD: "Field Name [Press 'Return' to exit] : ",
-  TYPE: "Field Type : ",
-  ARRAY: "Array ? : ",
-  NEW: "Create Another Model ? : ",
-};
-
-const ERRORS = {
-  CHOICE: "Error : Invalid Choice",
-  TYPE:
-    "Error : Only available types are : ObjectId, String, Number, Date, Boolean, Mixed and Arrays",
-};
-
-const MODEL_TYPES = [
-  "ObjectId",
-  "String",
-  "Number",
-  "Date",
-  "Boolean",
-  "Mixed",
-];
-
-function exit(question) {
-  let flag = true;
-  if (keyInYN(question)) flag = false;
-  return flag;
-}
+const { getFields, exit } = require("../utils/genHelpers");
 
 // TODO EMBEDDED & REF
 function generateRest() {
@@ -57,50 +20,19 @@ function generateRest() {
   let models = [];
 
   while (model_flag) {
-    let fields = [];
-
-    /* STEP 1 : Model Name */
     console.clear();
+    let fields = [];
+    /* STEP 1 : Model Name */
     let modelName = question(MODEL_MESSAGES.NAME);
     if (modelName === "") {
       // 'Return' Button pressed.
       model_flag = exit(MENU_QUESTIONS.EXIT);
       break;
     } else {
-      let field_flag = true;
-
-      /* STEP 2 : Create Fields Until Users inputs the Return button */
-      while (field_flag) {
-        let field = {};
-        field.name = question(MODEL_MESSAGES.FIELD);
-        if (field.name === "") {
-          // 'Return' Button pressed
-          field_flag = exit(MENU_QUESTIONS.EXIT);
-          break;
-        }
-
-        /* Field Typing Flags */
-        let type_filter1 = false;
-        let type_filter2 = false;
-
-        /*Control Fields Until Users input is correct */
-        do {
-          if (type_filter1 && type_filter2) console.log(ERRORS.TYPE.red);
-          field.type = question(MODEL_MESSAGES.TYPE);
-
-          type_filter1 = !MODEL_TYPES.map((v) => v.toLowerCase()).includes(
-            field.type.toLowerCase()
-          ); // Filters Regular Typing
-
-          type_filter2 = !MODEL_TYPES.map(
-            (v) => "[" + v.toLowerCase() + "]"
-          ).includes(field.type.toLowerCase()); // Filters Arrays
-        } while (type_filter1 && type_filter2);
-
-        fields.push(field);
-      }
-      models.push({ name: modelName, fields: fields });
+      /* Step 2 : Get Fields and Typing */
+      fields = getFields();
     }
+    models.push({ name: modelName, fields: fields });
   }
 
   /* Step 3 : For every model entered generate Model/Controllers/Route files */
@@ -118,7 +50,6 @@ function menu() {
   for (let option of MENU) {
     console.log(option);
   }
-
   let choice = question(MENU_QUESTIONS.CHOICE);
 
   switch (choice) {
