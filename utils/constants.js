@@ -20,14 +20,16 @@ const MODEL_MESSAGES = {
   FIELD: "Field Name [Press 'Return' to exit] : ",
   TYPE: "Field Type : ",
   NEW: "Create Another Model ? : ",
+  REF: "What Model would you like to reference ? [Press 'Return' to cancel] :",
 };
 
 const ERRORS = {
   CHOICE: "Error : Invalid Choice",
   TYPE:
     "Error : Only available types are : ObjectId, String, Number, Date, Boolean, Mixed and Arrays",
-  MODEL_NAME="",
-  FIELD_NAME="",
+  INVALID_REF: "Only available Models are : ",
+  MODEL_NAME: "",
+  FIELD_NAME: "",
 };
 
 const MODEL_TYPES = [

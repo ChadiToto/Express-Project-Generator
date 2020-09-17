@@ -1,4 +1,6 @@
 const { question, keyInYN } = require("readline-sync");
+const execSync = require("child_process").execSync;
+
 const {
   MODEL_MESSAGES,
   ERRORS,
@@ -18,6 +20,26 @@ function exit(question) {
 }
 
 /**
+ * This function adds a reference to the current Field
+ */
+function getRef() {
+  let ref = "";
+  let flag = true;
+  let current_models = execSync(`ls ./models`, {
+    encoding: "utf-8",
+  }).split("\n");
+  current_models = current_models.map((v) => v.slice(0, -3)); // Remove .js extension
+  while (flag) {
+    ref = question(MODEL_MESSAGES.REF);
+    if (!current_models.includes(ref))
+      console.log((ERRORS.INVALID_REF + current_models).red);
+    else flag = false;
+  }
+  let type = `{ type: Schema.Types.ObjectId, ref: '${ref}' }`;
+  return type;
+}
+
+/**
  * This function gets the typing for the current Field
  * It also controls the typing by forcing the user to enter a correct input
  * @returns {String} type of the current field
@@ -34,13 +56,14 @@ function getFieldType() {
     if (type_filter1 && type_filter2) console.log(ERRORS.TYPE.red); // Input Error
     type = capitalize(question(MODEL_MESSAGES.TYPE).toLowerCase());
 
-    type_filter1 = !MODEL_TYPES.map((v) => v.includes(type)); // Filters Regular Typing
+    /* ObjectID Case */
+    if (type.toLowerCase() === "objectid") type = getRef();
 
+    type_filter1 = !MODEL_TYPES.map((v) => v.includes(type)); // Filters Regular Typing
     type_filter2 = !MODEL_TYPES.map((v) => "[" + v + "]").includes(type); // Filters Arrays
   } while (type_filter1 && type_filter2);
 
   // TODO OBJECTID CASE
-  //if(type.toLowerCase==="objectid") getRef();
   //else if(type.toLowerCase==="[objectid]") "["+getRef()+"]"
 
   return type;

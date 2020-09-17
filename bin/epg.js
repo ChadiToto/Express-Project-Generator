@@ -30,19 +30,20 @@ function generateRest() {
       break;
     } else {
       /* Step 2 : Get Fields and Typing */
-      fields = getFields();
+      fields = getFields(models);
     }
-    models.push({ name: modelName, fields: fields });
+    /* Step 3 : For every model entered generate Model/Controllers/Route files */
+    let model = { name: modelName, fields: fields };
+    generateModel(model);
   }
 
-  /* Step 3 : For every model entered generate Model/Controllers/Route files */
-  const bar = new cliProgress.Bar(PROGRESS, cliProgress.Presets.shades_grey);
+  /*const bar = new cliProgress.Bar(PROGRESS, cliProgress.Presets.shades_grey);
   bar.start(models.length, 1);
   for (let i = 0; i < models.length; i++) {
     generateModel(models[i]);
     bar.update(i + 1);
   }
-  bar.stop();
+  bar.stop();*/
 }
 
 function menu() {
