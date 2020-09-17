@@ -31,7 +31,8 @@ function getRef() {
   current_models = current_models.map((v) => v.slice(0, -3)); // Remove .js extension
   while (flag) {
     ref = question(MODEL_MESSAGES.REF);
-    if (!current_models.includes(ref))
+    if (ref === "") return "";
+    else if (!current_models.includes(ref))
       console.log((ERRORS.INVALID_REF + current_models).red);
     else flag = false;
   }
@@ -53,19 +54,17 @@ function getFieldType() {
 
   /*Control Fields Until Users input is correct */
   do {
-    if (type_filter1 && type_filter2) console.log(ERRORS.TYPE.red); // Input Error
-    type = capitalize(question(MODEL_MESSAGES.TYPE).toLowerCase());
-
-    /* ObjectID Case */
-    if (type.toLowerCase() === "objectid") type = getRef();
-
-    type_filter1 = !MODEL_TYPES.map((v) => v.includes(type)); // Filters Regular Typing
+    type = question(MODEL_MESSAGES.TYPE).toLowerCase();
+    /* Type Filters */
+    type_filter1 = !MODEL_TYPES.includes(type); // Filters Regular Typing
     type_filter2 = !MODEL_TYPES.map((v) => "[" + v + "]").includes(type); // Filters Arrays
+    /* Error : Invalid Input */
+    if (type_filter1 && type_filter2) console.log(ERRORS.TYPE.red);
+    /* ObjectID Case */
+    if (type === "objectid") type = getRef();
+    else if (type === "[objectid]") type = "[" + getRef() + "]";
+    else type = capitalize(type);
   } while (type_filter1 && type_filter2);
-
-  // TODO OBJECTID CASE
-  //else if(type.toLowerCase==="[objectid]") "["+getRef()+"]"
-
   return type;
 }
 

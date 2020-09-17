@@ -30,15 +30,16 @@ const ERRORS = {
   INVALID_REF: "Only available Models are : ",
   MODEL_NAME: "",
   FIELD_NAME: "",
+  NO_REFS: "No models are available to Reference !",
 };
 
 const MODEL_TYPES = [
-  "ObjectId",
-  "String",
-  "Number",
-  "Date",
-  "Boolean",
-  "Mixed",
+  "objectid",
+  "string",
+  "number",
+  "date",
+  "boolean",
+  "mixed",
 ];
 
 module.exports = {
