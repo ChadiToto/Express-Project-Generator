@@ -3,15 +3,12 @@
 const {
   MENU,
   MENU_QUESTIONS,
-  PROGRESS,
   MODEL_MESSAGES,
   ERRORS,
 } = require("../utils/constants");
 
 const { question } = require("readline-sync");
 const { generateModel } = require("../lib/generator");
-const cliProgress = require("cli-progress");
-
 const { getFields, exit } = require("../utils/genHelpers");
 
 // TODO EMBEDDED & REF
@@ -36,14 +33,6 @@ function generateRest() {
     let model = { name: modelName, fields: fields };
     generateModel(model);
   }
-
-  /*const bar = new cliProgress.Bar(PROGRESS, cliProgress.Presets.shades_grey);
-  bar.start(models.length, 1);
-  for (let i = 0; i < models.length; i++) {
-    generateModel(models[i]);
-    bar.update(i + 1);
-  }
-  bar.stop();*/
 }
 
 function menu() {

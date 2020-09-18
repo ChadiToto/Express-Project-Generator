@@ -27,6 +27,7 @@ const ERRORS = {
   CHOICE: "Error : Invalid Choice",
   TYPE:
     "Error : Only available types are : ObjectId, String, Number, Date, Boolean, Mixed and Arrays",
+  EMBEDDED: "You can also Embed : ",
   INVALID_REF: "Only available Models are : ",
   MODEL_NAME: "",
   FIELD_NAME: "",

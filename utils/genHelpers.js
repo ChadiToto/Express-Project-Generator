@@ -1,13 +1,11 @@
 const { question, keyInYN } = require("readline-sync");
-const execSync = require("child_process").execSync;
-
 const {
   MODEL_MESSAGES,
   ERRORS,
   MODEL_TYPES,
   MENU_QUESTIONS,
 } = require("../utils/constants");
-const { capitalize } = require("./helpers");
+const { capitalize, getCurrentModels, consoleError } = require("./helpers");
 
 /**
  * This function exits the current context
@@ -21,19 +19,24 @@ function exit(question) {
 
 /**
  * This function adds a reference to the current Field
+ * @returns {String} containing the reference
  */
 function getRef() {
   let ref = "";
   let flag = true;
-  let current_models = execSync(`ls ./models`, {
-    encoding: "utf-8",
-  }).split("\n");
-  current_models = current_models.map((v) => v.slice(0, -3)); // Remove .js extension
+
+  let current_models = getCurrentModels();
+  /* No Available Models */
+  if (current_models.length === 0) {
+    consoleError(ERRORS.NO_REFS);
+    return "";
+  }
+
   while (flag) {
     ref = question(MODEL_MESSAGES.REF);
     if (ref === "") return "";
     else if (!current_models.includes(ref))
-      console.log((ERRORS.INVALID_REF + current_models).red);
+      consoleError(ERRORS.INVALID_REF + current_models);
     else flag = false;
   }
   let type = `{ type: Schema.Types.ObjectId, ref: '${ref}' }`;
@@ -43,14 +46,17 @@ function getRef() {
 /**
  * This function gets the typing for the current Field
  * It also controls the typing by forcing the user to enter a correct input
+ * @todo Embedded Document
  * @returns {String} type of the current field
  */
 function getFieldType() {
   let type = "";
+  let current_models = getCurrentModels();
 
   /* Field Typing Flags */
   let type_filter1 = false;
   let type_filter2 = false;
+  let type_filter3 = false;
 
   /*Control Fields Until Users input is correct */
   do {
@@ -58,12 +64,22 @@ function getFieldType() {
     /* Type Filters */
     type_filter1 = !MODEL_TYPES.includes(type); // Filters Regular Typing
     type_filter2 = !MODEL_TYPES.map((v) => "[" + v + "]").includes(type); // Filters Arrays
-    /* Error : Invalid Input */
-    if (type_filter1 && type_filter2) console.log(ERRORS.TYPE.red);
     /* ObjectID Case */
     if (type === "objectid") type = getRef();
     else if (type === "[objectid]") type = "[" + getRef() + "]";
     else type = capitalize(type);
+    /* Special case : getRef() returns "" */
+    if (type === "") {
+      type_filter1 = true;
+      type_filter2 = true;
+      continue;
+    }
+    /* Error : Invalid Input */
+    if (type_filter1 && type_filter2) {
+      consoleError(ERRORS.TYPE);
+      if (current_models.length !== 0)
+        consoleError(ERRORS.EMBEDDED + current_models);
+    }
   } while (type_filter1 && type_filter2);
   return type;
 }
