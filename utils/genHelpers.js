@@ -45,25 +45,27 @@ function getRef() {
 
 /**
  * This function gets the typing for the current Field
- * It also controls the typing by forcing the user to enter a correct input
- * @todo Embedded Document
+ * It also controls the typing by forcing the user to enter a correct input @todo
  * @returns {String} type of the current field
  */
 function getFieldType() {
   let type = "";
-  let current_models = getCurrentModels();
+  let current_models = getCurrentModels().map((model) => model.toLowerCase());
 
   /* Field Typing Flags */
   let type_filter1 = false;
   let type_filter2 = false;
   let type_filter3 = false;
+  let type_filter4 = false;
 
-  /*Control Fields Until Users input is correct */
+  /*Control Fields Until User's input is correct */
   do {
     type = question(MODEL_MESSAGES.TYPE).toLowerCase();
     /* Type Filters */
     type_filter1 = !MODEL_TYPES.includes(type); // Filters Regular Typing
     type_filter2 = !MODEL_TYPES.map((v) => "[" + v + "]").includes(type); // Filters Arrays
+    type_filter3 = !current_models.includes(type); // Filters Embedded Types
+    type_filter4 = !current_models.map((v) => "[" + v + "]").includes(type); // Filter Embedded Arrays
     /* ObjectID Case */
     if (type === "objectid") type = getRef();
     else if (type === "[objectid]") type = "[" + getRef() + "]";
@@ -72,15 +74,17 @@ function getFieldType() {
     if (type === "") {
       type_filter1 = true;
       type_filter2 = true;
-      continue;
+      type_filter3 = true;
+      type_filter4 = true;
+      continue; // we don't want to display an error in this case
     }
     /* Error : Invalid Input */
-    if (type_filter1 && type_filter2) {
+    if (type_filter1 && type_filter2 && type_filter3 && type_filter4) {
       consoleError(ERRORS.TYPE);
       if (current_models.length !== 0)
         consoleError(ERRORS.EMBEDDED + current_models);
     }
-  } while (type_filter1 && type_filter2);
+  } while (type_filter1 && type_filter2 && type_filter3 && type_filter4);
   return type;
 }
 
