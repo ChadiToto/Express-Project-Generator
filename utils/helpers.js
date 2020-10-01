@@ -1,6 +1,18 @@
 const execSync = require("child_process").execSync;
 const colors = require("colors");
 
+function processArrays(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i].startsWith("[")) arr[i] = arr[i].slice(1, arr[i].length - 1);
+  }
+  return arr;
+}
+
+function removeDuplicates(arr) {
+  let unique = [...new Set(arr)];
+  return unique;
+}
+
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
@@ -22,4 +34,10 @@ function getCurrentModels() {
   }
 }
 
-module.exports = { capitalize, getCurrentModels, consoleError };
+module.exports = {
+  capitalize,
+  getCurrentModels,
+  consoleError,
+  removeDuplicates,
+  processArrays,
+};
