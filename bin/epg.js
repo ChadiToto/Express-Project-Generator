@@ -9,7 +9,7 @@ const {
 
 const { question } = require("readline-sync");
 const { generateModel, generateController } = require("../lib/generator");
-const { getFields, exit } = require("../utils/genHelpers");
+const { getFields, exit } = require("../lib/inputs");
 
 // TODO EMBEDDED & REF
 function generateRest() {
