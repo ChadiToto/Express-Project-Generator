@@ -8,7 +8,7 @@ const {
 } = require("../utils/constants");
 
 const { question } = require("readline-sync");
-const { generateModel } = require("../lib/generator");
+const { generateModel, generateController } = require("../lib/generator");
 const { getFields, exit } = require("../utils/genHelpers");
 
 // TODO EMBEDDED & REF
@@ -32,6 +32,7 @@ function generateRest() {
     /* Step 3 : For every model entered generate Model/Controllers/Route files */
     let model = { name: modelName, fields: fields };
     generateModel(model);
+    generateController(model);
   }
 }
 
