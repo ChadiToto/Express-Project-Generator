@@ -8,7 +8,11 @@ const {
 } = require("../utils/constants");
 
 const { question } = require("readline-sync");
-const { generateModel, generateController } = require("../lib/generator");
+const {
+  generateModel,
+  generateController,
+  generateRoutes,
+} = require("../lib/restGen");
 const { getFields, exit } = require("../lib/inputs");
 
 // TODO EMBEDDED & REF
@@ -33,6 +37,7 @@ function generateRest() {
     let model = { name: modelName, fields: fields };
     generateModel(model);
     generateController(model);
+    generateRoutes(model);
   }
 }
 

@@ -1,5 +1,7 @@
 const { MODEL_TYPES } = require("./constants");
 const { removeDuplicates, processArrays } = require("./helpers");
+const path = require("path");
+const fs = require("fs");
 
 /**
  * This function add Imports in the case of an embedded field
@@ -61,6 +63,23 @@ function setBody(model) {
   return init;
 }
 
+function copyTemplate(src, dst, model) {
+  const SRC_DIR = path.resolve(src);
+  const DST_DIR = path.resolve(dst);
+
+  if (!fs.existsSync(DST_DIR)) {
+    fs.mkdirSync(DST_DIR);
+    fs.chmodSync(DST_DIR, 777);
+  }
+
+  const generated_file = path.resolve(
+    DST_DIR + "/" + model.name.toLowerCase() + ".js"
+  );
+  fs.copyFileSync(SRC_DIR, generated_file);
+
+  return generated_file;
+}
+
 /**
  * This function replaces Template values with new values
  * @param {Array} values of Objects containing Old Values & New Values
@@ -72,4 +91,10 @@ function modifyTemplate(values, template) {
   return template;
 }
 
-module.exports = { setImport, setFields, setBody, modifyTemplate };
+module.exports = {
+  setImport,
+  setFields,
+  setBody,
+  copyTemplate,
+  modifyTemplate,
+};

@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var modelController = require("../controllers/mycontroller.js");
+var modelController = require("../controllers/mycontroller");
 
 /* List All */
 router.get("/", modelController.list);
