@@ -47,7 +47,7 @@ function menu() {
     case "1":
       //TODO INTIALIZE PROJECT
       break;
-    case "2": // TODO ADVANCED MODELS
+    case "2":
       generateRest();
       break;
     case "3":
