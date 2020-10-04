@@ -1,9 +1,18 @@
 const execSync = require("child_process").execSync;
 const colors = require("colors");
 
+function processType(type) {
+  let isArray = false;
+  if (type.startsWith("[")) {
+    type = type.slice(1, type.length - 1);
+    isArray = true;
+  }
+  return { type, isArray };
+}
+
 function processArrays(arr) {
   for (let i = 0; i < arr.length; i++) {
-    if (arr[i].startsWith("[")) arr[i] = arr[i].slice(1, arr[i].length - 1);
+    arr[i] = processType(arr[i]).type;
   }
   return arr;
 }
@@ -40,4 +49,5 @@ module.exports = {
   consoleError,
   removeDuplicates,
   processArrays,
+  processType,
 };
